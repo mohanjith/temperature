@@ -1,0 +1,190 @@
+---
+openapi: 3.0.0
+info:
+  title: Temperature data API
+  description: >-
+    Temperature data API for managing data from sensors around the house
+  version: 1.0.0
+servers:
+  - url: http://localhost:3030/v1
+  - url: http://127.0.0.1:3030/v1
+
+paths:
+  /health:
+    description: Health endpoint
+    get:
+      responses:
+        200:
+          description: service up and running
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - ok
+  /sensors:
+    description: Sensors management endpoint
+    get:
+      responses:
+        200:
+          description: list sensors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sensor'
+    post:
+      summary: Add sensor
+      requestBody:
+        description: Sensor details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Sensor'
+      responses:
+        200:
+          description: Adding sensor successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaveSuccess'
+  /sensors/{sensorId}:
+    parameters:
+      - name: sensorId
+        in: path
+        description: ID of the sensor
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 03ada859-d201-4bda-8d3e-46bb9903eddc
+    get:
+      summary: Return the sensor details
+      responses:
+        200:
+          description: Sensor details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sensor'
+    put:
+      summary: Update sensor
+      requestBody:
+        description: Sensor details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Sensor'
+      responses:
+        200:
+          description: Updating sensor successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaveSuccess'
+  /sensors/{sensorId}/data:
+    parameters:
+      - name: sensorId
+        in: path
+        description: ID of the sensor
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 03ada859-d201-4bda-8d3e-46bb9903eddc
+    get:
+      summary: Return the sensor temperature data
+      responses:
+        200:
+          description: temperature data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Temperature'
+    post:
+      summary: Add temperature data from sensor
+      requestBody:
+        description: Temperature data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Temperature'
+      responses:
+        200:
+          description: Adding temperature data successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaveSuccess'
+  /data:
+    get:
+      summary: Return the sensor temperature data
+      responses:
+        200:
+          description: temperature data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Temperature'
+components:
+  schemas:
+    BoomError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Bad request
+        message:
+          type: string
+          example: Some error description
+        statusCode:
+          type: number
+          example: 400
+    Sensor:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 03ada859-d201-4bda-8d3e-46bb9903eddc
+        location:
+          type: string
+          example: Bedroom
+        model:
+          type: string
+          example: TMP37FT9Z
+        indoor:
+          type: boolean
+          example: true
+    Temperature:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          example: 2022-03-19T17:32:28Z
+        temperature:
+          type: number
+          example: 2.5
+        metadata:
+          type: object
+          properties:
+            sensorId:
+              type: string
+              example: 03ada859-d201-4bda-8d3e-46bb9903eddc
+    SaveSuccess:
+      type: object
+      properties:
+        message:
+          type: string
+        status:
+          type: string
+          example: success

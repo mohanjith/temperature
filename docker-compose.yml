@@ -1,0 +1,11 @@
+---
+version: '3'
+services:
+  mongo:
+    image: mongo:5.0.6
+    command: ['--config', '/etc/mongod.conf']
+    ports:
+      - '27017:27017'
+    volumes:
+      - ./mongo/mongod.conf:/etc/mongod.conf
+      - ./mongo/log/:/var/log/mongodb/
