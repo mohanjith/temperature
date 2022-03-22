@@ -7,7 +7,7 @@
 
 ## Steps
 
-### 1. Start MongoDB with Docker compose  
+### 1. Start MongoDB with Docker compose
 
 `$ docker-compose up`
 
@@ -28,9 +28,13 @@
 Visit [Swagger UI](http://localhost:3030/api-docs/) and try the different methods. Examples are provided in Swagger UI.
 
 For example following order would be useful order.
+
 1. POST /sensors
 2. GET /sensors
 3. GET /sensor/:sensorId
 4. POST /sensor/:sensorId/data
 5. GET /data
 
+## Architecture
+
+![Architecture](/docs/images/architecture.png)
